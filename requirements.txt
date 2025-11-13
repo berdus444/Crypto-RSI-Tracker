@@ -1,0 +1,6 @@
+requests
+pandas
+numpy
+TA-Lib
+websocket-client
+Flask
