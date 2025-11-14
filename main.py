@@ -12,6 +12,7 @@ from flask import Flask
 # ---------------- CONFIG ----------------
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+APP_URL = os.getenv("APP_URL")  # Railway veya başka bir yerdeki URL
 
 INTERVAL = "3m"
 RSI_PERIOD = 6
@@ -70,7 +71,6 @@ def on_message(ws, message, symbol):
 
         rsi = ta.RSI(np.array(latest_data[symbol]), timeperiod=RSI_PERIOD)[-1]
 
-        # === RESET MANTIĞI ===
         if rsi > RSI_ALERT_THRESHOLD and not alerts_status[symbol]["alerted"]:
             msg = f"⚠️ {symbol} RSI(6) = {rsi:.2f} (> {RSI_ALERT_THRESHOLD})"
             send_telegram_message(msg)
@@ -139,6 +139,20 @@ def start_tracker():
         tracker_started = True
         print("📡 RSI Tracker başlatılıyor...")
         threading.Thread(target=run_rsi_tracker, daemon=True).start()
+
+# ---------------- SELF-PING (Her 5 dakikada bir) ----------------
+def self_ping():
+    while True:
+        if APP_URL:
+            try:
+                requests.get(APP_URL, timeout=5)
+                print("🔄 Self-ping gönderildi.")
+            except Exception as e:
+                print("Self-ping hatası:", e)
+        time.sleep(600)  # 300 saniye = 5 dakika
+
+# Başlatıcı thread
+threading.Thread(target=self_ping, daemon=True).start()
 
 # İlk HTTP isteğinde tracker'ı başlat
 @app.before_request
