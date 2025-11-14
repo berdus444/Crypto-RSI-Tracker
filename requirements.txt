@@ -4,3 +4,4 @@ numpy
 TA-Lib
 websocket-client
 Flask
+gunicorn
