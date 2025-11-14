@@ -131,6 +131,12 @@ app = Flask(__name__)
 def home():
     return "✅ Binance RSI Tracker çalışıyor."
 
-if __name__ == "__main__":
-    threading.Thread(target=run_rsi_tracker, daemon=True).start()
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
+tracker_started = False
+
+@app.before_first_request
+def start_tracker():
+    global tracker_started
+    if not tracker_started:
+        tracker_started = True
+        threading.Thread(target=run_rsi_tracker, daemon=True).start()
+        print("📡 RSI Tracker başlatıldı!")
