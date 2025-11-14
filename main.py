@@ -16,7 +16,7 @@ APP_URL = os.getenv("APP_URL")  # Railway veya başka bir yerdeki URL
 
 INTERVAL = "3m"
 RSI_PERIOD = 6
-RSI_ALERT_THRESHOLD = 92
+RSI_ALERT_THRESHOLD = 93
 RSI_RESET_THRESHOLD = 88
 
 latest_data = {}
@@ -162,5 +162,6 @@ def before_request():
 if __name__ == "__main__":
     start_tracker()
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+
 
 
