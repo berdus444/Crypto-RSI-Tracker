@@ -1,7 +1,7 @@
-requests
-pandas
-numpy
-TA-Lib
-websocket-client
 Flask
 gunicorn
+pandas
+numpy
+ta-lib
+websocket-client
+requests

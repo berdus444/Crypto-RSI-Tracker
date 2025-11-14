@@ -133,10 +133,18 @@ def home():
 
 tracker_started = False
 
-@app.before_first_request
 def start_tracker():
     global tracker_started
     if not tracker_started:
         tracker_started = True
+        print("📡 RSI Tracker başlatılıyor...")
         threading.Thread(target=run_rsi_tracker, daemon=True).start()
-        print("📡 RSI Tracker başlatıldı!")
+
+# İlk HTTP isteğinde tracker'ı başlat
+@app.before_request
+def before_request():
+    start_tracker()
+
+if __name__ == "__main__":
+    start_tracker()
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
